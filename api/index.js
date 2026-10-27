@@ -2,11 +2,10 @@ export default function handler(req, res) {
   // 日本時間を取得 (UTC + 9時間)
   const now = new Date();
   const jstTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
-  const hours = jstTime.getUTCHours();
-  const minutes = jstTime.getUTCMinutes();
+  const hours = jstTime.getUTCHours(); // 0〜23の日本時間（時）
 
-  // 21:55 〜 22:00 の間かどうか判定
-  const isSpecial = (hours === 21 && minutes >= 55 && minutes < 60);
+  // 夜22:00 〜 翌朝7:00 (22時、23時、および 0時〜6時台) の間 Special にする
+  const isSpecial = (hours >= 22 || hours < 7);
 
   const normalMetadata = {
     schema: "ipfs://bafkreidbtjf2ihiwtptiyadjfmesplo555iy2jdcwhfr6hkenr2z3fvxn2y",
@@ -28,7 +27,7 @@ export default function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
 
-  // キャッシュを一切保持させないヘッダー
+  // キャッシュ制御ヘッダー
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
