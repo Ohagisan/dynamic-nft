@@ -5,8 +5,8 @@ export default function handler(req, res) {
   const hours = jstTime.getUTCHours();
   const minutes = jstTime.getUTCMinutes();
 
-  // 21:50 〜 21:55 の間かどうか判定
-  const isSpecial = (hours === 21 && minutes >= 50 && minutes < 55);
+  // 21:55 〜 22:00 の間かどうか判定
+  const isSpecial = (hours === 21 && minutes >= 55 && minutes < 60);
 
   const normalMetadata = {
     schema: "ipfs://bafkreidbtjf2ihiwtptiyadjfmesplo555iy2jdcwhfr6hkenr2z3fvxn2y",
@@ -24,9 +24,14 @@ export default function handler(req, res) {
     image: "ipfs://bafybeic4mztotq6ketl6zirfarjytm5rgc2uf7723y4373zcpfgjxysbu4/2.png"
   };
 
-  // CORSヘッダー（外部ツール等からのブロック防止）
+  // CORSヘッダー
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
+
+  // キャッシュを一切保持させないヘッダー
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
 
   if (isSpecial) {
     res.status(200).json(specialMetadata);
